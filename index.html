@@ -819,7 +819,323 @@
             }
         }
 
-/* ...existing code... */
+        /* ============ MINESWEEPER GAME ============ */
+        .game-section {
+            margin-top: 80px;
+            padding: 0 20px;
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.08) 0%, rgba(0, 204, 102, 0.05) 100%);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-title::before {
+            content: '⚙';
+            animation: spin-drill 4s linear infinite;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 8px 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .game-settings {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-group label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .setting-group select,
+        .game-btn {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--primary-green);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .setting-group select:hover,
+        .game-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--primary-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .setting-group select option {
+            background: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        .game-btn {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .game-btn.restart {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+            color: var(--gold);
+        }
+
+        .game-btn.restart:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .game-board {
+            display: grid;
+            gap: 3px;
+            justify-content: center;
+            margin: 20px auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 204, 102, 0.1) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .cell:hover:not(.revealed):not(.flagged) {
+            background: rgba(0, 255, 136, 0.25);
+            border-color: var(--primary-green);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            transform: scale(1.05);
+        }
+
+        .cell.revealed {
+            background: rgba(0, 0, 0, 0.4);
+            cursor: default;
+        }
+
+        .cell.revealed:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cell.flagged {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--gold);
+        }
+
+        .cell.flagged::after {
+            content: '⚙';
+            color: var(--gold);
+            animation: spin-drill 3s linear infinite;
+        }
+
+        .cell.mine {
+            background: rgba(255, 50, 50, 0.3);
+            border-color: #ff5050;
+        }
+
+        .cell.mine::after {
+            content: '🔩';
+        }
+
+        .cell.exploded {
+            background: rgba(255, 50, 50, 0.5);
+            animation: explode 0.5s ease;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); background: rgba(255, 100, 50, 0.8); }
+            100% { transform: scale(1); }
+        }
+
+        .cell[data-count="1"] { color: #00ff88; }
+        .cell[data-count="2"] { color: #39ff14; }
+        .cell[data-count="3"] { color: #ffd700; }
+        .cell[data-count="4"] { color: #ff9500; }
+        .cell[data-count="5"] { color: #ff5050; }
+        .cell[data-count="6"] { color: #ff00ff; }
+        .cell[data-count="7"] { color: #00ffff; }
+        .cell[data-count="8"] { color: #ffffff; }
+
+        .game-message {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .game-message.win {
+            display: block;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .game-message.lose {
+            display: block;
+            background: rgba(255, 50, 50, 0.2);
+            border: 1px solid #ff5050;
+            color: #ff5050;
+        }
+
+        .game-quote {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        .game-hint {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        .game-hint kbd {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: inherit;
+            color: var(--primary-green);
+        }
+
+        .difficulty-info {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .custom-setting {
+            transition: opacity 0.3s ease;
+        }
+
+        .game-board.large-grid .cell {
+            width: 28px;
+            height: 28px;
+            font-size: 0.75rem;
+        }
+
+        .game-board.xlarge-grid .cell {
+            width: 24px;
+            height: 24px;
+            font-size: 0.65rem;
+        }
+
+        .game-board.xxlarge-grid .cell {
+            width: 20px;
+            height: 20px;
+            font-size: 0.6rem;
+        }
+
+        @media (max-width: 500px) {
+            .cell {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+            }
+
+            .game-board.large-grid .cell {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+            }
+
+            .game-board.xlarge-grid .cell {
+                width: 20px;
+                height: 20px;
+                font-size: 0.6rem;
+            }
+
+            .game-board.xxlarge-grid .cell {
+                width: 18px;
+                height: 18px;
+                font-size: 0.55rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -908,6 +1224,84 @@
                 </div>
         </section>
 
+
+        <!-- Minesweeper Game Section -->
+        <section class="game-section">
+            <h2 class="section-title">ПРОНЗИ ПОЛЕ</h2>
+            
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-title">Сапёр-Лаганн</div>
+                    <div class="game-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Буры</div>
+                            <div class="stat-value" id="mines-count">10</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Время</div>
+                            <div class="stat-value" id="timer">0:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-settings">
+                    <div class="setting-group">
+                        <label>Сложность</label>
+                        <select id="difficulty-preset">
+                            <option value="easy">Лёгкий</option>
+                            <option value="medium" selected>Средний</option>
+                            <option value="hard">Сложный</option>
+                            <option value="insane">Безумный</option>
+                            <option value="gurren">ГУРРЕН-ЛАГАНН</option>
+                            <option value="custom">Свои настройки</option>
+                        </select>
+                    </div>
+                    <div class="setting-group custom-setting" style="display:none;">
+                        <label>Размер</label>
+                        <select id="grid-size">
+                            <option value="6">6×6</option>
+                            <option value="8">8×8</option>
+                            <option value="10" selected>10×10</option>
+                            <option value="12">12×12</option>
+                            <option value="14">14×14</option>
+                            <option value="16">16×16</option>
+                            <option value="18">18×18</option>
+                            <option value="20">20×20</option>
+                        </select>
+                    </div>
+                    <div class="setting-group custom-setting" style="display:none;">
+                        <label>Буры</label>
+                        <select id="mine-count">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15" selected>15</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                            <option value="50">50</option>
+                            <option value="60">60</option>
+                            <option value="75">75</option>
+                            <option value="99">99</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>&nbsp;</label>
+                        <button class="game-btn restart" id="restart-btn">Заново</button>
+                    </div>
+                </div>
+
+                <div class="difficulty-info" id="difficulty-info">10×10 • 15 буров</div>
+
+                <div class="game-board" id="game-board"></div>
+
+                <div class="game-message" id="game-message"></div>
+                <div class="game-quote" id="game-quote"></div>
+
+                <div class="game-hint">
+                    <kbd>ЛКМ</kbd> — открыть &nbsp; <kbd>ПКМ</kbd> — отметить бур
+                </div>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer>
@@ -1271,6 +1665,318 @@
         volumePopup.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        // ============ MINESWEEPER GAME ============
+        const gameBoard = document.getElementById('game-board');
+        const gridSizeSelect = document.getElementById('grid-size');
+        const mineCountSelect = document.getElementById('mine-count');
+        const difficultyPreset = document.getElementById('difficulty-preset');
+        const restartBtn = document.getElementById('restart-btn');
+        const minesCountDisplay = document.getElementById('mines-count');
+        const timerDisplay = document.getElementById('timer');
+        const gameMessage = document.getElementById('game-message');
+        const gameQuote = document.getElementById('game-quote');
+        const difficultyInfo = document.getElementById('difficulty-info');
+        const customSettings = document.querySelectorAll('.custom-setting');
+
+        let grid = [];
+        let gridSize = 10;
+        let mineCount = 15;
+        let flagsPlaced = 0;
+        let revealedCount = 0;
+        let gameOver = false;
+        let gameStarted = false;
+        let timerInterval = null;
+        let seconds = 0;
+
+        // Пресеты сложности
+        const difficultyPresets = {
+            easy: { size: 8, mines: 10, name: 'Лёгкий' },
+            medium: { size: 10, mines: 15, name: 'Средний' },
+            hard: { size: 14, mines: 40, name: 'Сложный' },
+            insane: { size: 18, mines: 70, name: 'Безумный' },
+            gurren: { size: 20, mines: 99, name: 'ГУРРЕН-ЛАГАНН' }
+        };
+
+        const winQuotes = [
+            "Твой бур пронзил все мины!",
+            "Пробивай — вот и весь секрет!",
+            "Кто ты такой?! — Сапёр Симон!",
+            "Спираль победы закручивается!",
+            "Верь в себя, который верит в себя!",
+            "Небеса пронзены!",
+            "Это сила спирали!"
+        ];
+
+        const loseQuotes = [
+            "Даже падение — часть спирали...",
+            "Вставай! Настоящие мужчины не сдаются!",
+            "Камина бы не остановился!",
+            "Это ещё не конец пути!",
+            "Пробурь себе новый шанс!",
+            "Бур сломался... но дух — нет!",
+            "Спираль продолжается!"
+        ];
+
+        function updateDifficultyInfo() {
+            difficultyInfo.textContent = `${gridSize}×${gridSize} • ${mineCount} буров`;
+        }
+
+        function applyPreset(preset) {
+            if (preset === 'custom') {
+                customSettings.forEach(el => el.style.display = 'flex');
+                gridSize = parseInt(gridSizeSelect.value);
+                mineCount = parseInt(mineCountSelect.value);
+            } else {
+                customSettings.forEach(el => el.style.display = 'none');
+                const config = difficultyPresets[preset];
+                gridSize = config.size;
+                mineCount = config.mines;
+            }
+            updateDifficultyInfo();
+        }
+
+        function getCellSize() {
+            if (gridSize <= 10) return 35;
+            if (gridSize <= 14) return 28;
+            if (gridSize <= 18) return 24;
+            return 20;
+        }
+
+        function getGridClass() {
+            if (gridSize <= 10) return '';
+            if (gridSize <= 14) return 'large-grid';
+            if (gridSize <= 18) return 'xlarge-grid';
+            return 'xxlarge-grid';
+        }
+
+        function initGame() {
+            const preset = difficultyPreset.value;
+            applyPreset(preset);
+            
+            // Проверка на максимум мин
+            const maxMines = gridSize * gridSize - 9;
+            if (mineCount > maxMines) {
+                mineCount = maxMines;
+            }
+
+            grid = [];
+            flagsPlaced = 0;
+            revealedCount = 0;
+            gameOver = false;
+            gameStarted = false;
+            seconds = 0;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            timerDisplay.textContent = '0:00';
+            minesCountDisplay.textContent = mineCount;
+            gameMessage.className = 'game-message';
+            gameMessage.style.display = 'none';
+            gameQuote.textContent = '';
+
+            const cellSize = getCellSize();
+            gameBoard.innerHTML = '';
+            gameBoard.className = 'game-board ' + getGridClass();
+            gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
+
+            // Создаём сетку
+            for (let row = 0; row < gridSize; row++) {
+                grid[row] = [];
+                for (let col = 0; col < gridSize; col++) {
+                    grid[row][col] = {
+                        mine: false,
+                        revealed: false,
+                        flagged: false,
+                        count: 0
+                    };
+
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    cell.addEventListener('click', () => handleClick(row, col));
+                    cell.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        handleRightClick(row, col);
+                    });
+                    
+                    gameBoard.appendChild(cell);
+                }
+            }
+
+            updateDifficultyInfo();
+        }
+
+        function placeMines(firstRow, firstCol) {
+            let minesPlaced = 0;
+            
+            while (minesPlaced < mineCount) {
+                const row = Math.floor(Math.random() * gridSize);
+                const col = Math.floor(Math.random() * gridSize);
+                
+                // Не ставим мины на первую клетку и вокруг неё
+                if (Math.abs(row - firstRow) <= 1 && Math.abs(col - firstCol) <= 1) continue;
+                if (grid[row][col].mine) continue;
+                
+                grid[row][col].mine = true;
+                minesPlaced++;
+            }
+
+            // Подсчёт чисел
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (!grid[row][col].mine) {
+                        grid[row][col].count = countAdjacentMines(row, col);
+                    }
+                }
+            }
+        }
+
+        function countAdjacentMines(row, col) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    if (dr === 0 && dc === 0) continue;
+                    const nr = row + dr;
+                    const nc = col + dc;
+                    if (nr >= 0 && nr < gridSize && nc >= 0 && nc < gridSize) {
+                        if (grid[nr][nc].mine) count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function handleClick(row, col) {
+            if (gameOver || grid[row][col].flagged || grid[row][col].revealed) return;
+
+            if (!gameStarted) {
+                gameStarted = true;
+                placeMines(row, col);
+                startTimer();
+            }
+
+            if (grid[row][col].mine) {
+                revealAllMines();
+                endGame(false);
+                const cell = getCell(row, col);
+                cell.classList.add('exploded');
+                return;
+            }
+
+            revealCell(row, col);
+            checkWin();
+        }
+
+        function handleRightClick(row, col) {
+            if (gameOver || grid[row][col].revealed) return;
+
+            const cell = getCell(row, col);
+            
+            if (grid[row][col].flagged) {
+                grid[row][col].flagged = false;
+                cell.classList.remove('flagged');
+                flagsPlaced--;
+            } else {
+                // Ограничение: нельзя поставить больше флагов, чем мин
+                if (flagsPlaced >= mineCount) return;
+                
+                grid[row][col].flagged = true;
+                cell.classList.add('flagged');
+                flagsPlaced++;
+            }
+            
+            minesCountDisplay.textContent = mineCount - flagsPlaced;
+        }
+
+        function revealCell(row, col) {
+            if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) return;
+            if (grid[row][col].revealed || grid[row][col].flagged || grid[row][col].mine) return;
+
+            grid[row][col].revealed = true;
+            revealedCount++;
+
+            const cell = getCell(row, col);
+            cell.classList.add('revealed');
+
+            if (grid[row][col].count > 0) {
+                cell.textContent = grid[row][col].count;
+                cell.dataset.count = grid[row][col].count;
+            } else {
+                // Рекурсивное открытие пустых клеток
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr !== 0 || dc !== 0) {
+                            revealCell(row + dr, col + dc);
+                        }
+                    }
+                }
+            }
+        }
+
+        function revealAllMines() {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col].mine) {
+                        const cell = getCell(row, col);
+                        cell.classList.add('revealed', 'mine');
+                    }
+                }
+            }
+        }
+
+        function getCell(row, col) {
+            return gameBoard.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function checkWin() {
+            const totalSafeCells = gridSize * gridSize - mineCount;
+            if (revealedCount === totalSafeCells) {
+                endGame(true);
+            }
+        }
+
+        function endGame(won) {
+            gameOver = true;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            const quotes = won ? winQuotes : loseQuotes;
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            gameMessage.textContent = won ? '🌀 ПОБЕДА! 🌀' : '💥 БУР ПРОБИЛ ТЕБЯ 💥';
+            gameMessage.className = `game-message ${won ? 'win' : 'lose'}`;
+            gameQuote.textContent = `"${randomQuote}"`;
+        }
+
+        // События
+        restartBtn.addEventListener('click', initGame);
+        difficultyPreset.addEventListener('change', initGame);
+        gridSizeSelect.addEventListener('change', () => {
+            if (difficultyPreset.value === 'custom') initGame();
+        });
+        mineCountSelect.addEventListener('change', () => {
+            if (difficultyPreset.value === 'custom') initGame();
+        });
+
+        // Запуск игры при загрузке
+        document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
