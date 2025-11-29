@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0e0f">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>ГУРРЕН-ЛАГАНН</title>
     <style>
         * {
@@ -22,6 +26,11 @@
             --text-gray: #b0b0b0;
         }
 
+        /* Прозрачный навбар и безопасные зоны */
+        html {
+            background: var(--darker-bg);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
@@ -29,6 +38,8 @@
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
+            /* Добавьте отступы для безопасных зон (вырезы, навбары) */
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         /* Animated Spiral Background */
@@ -301,6 +312,8 @@
             color: var(--text-gray);
             font-size: 0.9rem;
             border-top: 1px solid rgba(0, 255, 136, 0.2);
+            /* С учетом безопасной зоны */
+            padding-bottom: calc(40px + env(safe-area-inset-bottom));
         }
 
         .drill-icon {
@@ -553,68 +566,78 @@
         }
         @media (max-width: 600px) {
             #audio-control-bar {
-                bottom: 15px;
+                bottom: calc(15px + env(safe-area-inset-bottom));
                 left: 10px;
                 right: 10px;
                 transform: none;
-                padding: 12px 16px;
+                padding: 12px 14px;
                 min-width: unset;
                 max-width: unset;
                 border-radius: 12px;
             }
             
             .audio-bar-container {
-                gap: 10px;
-                height: 32px;
-            }
-            
-            #audio-bar-title {
-                min-width: 60px;
-                max-width: 80px;
-                font-size: 0.9rem;
-            }
-            
-            .audio-bar-progress-container {
-                gap: 6px;
-                min-width: 80px;
-            }
-            
-            #audio-bar-current,
-            #audio-bar-duration {
-                font-size: 0.75rem;
-                min-width: 30px;
-            }
-            
-            #audio-bar-progress {
-                max-width: 120px;
-            }
-            
-            #audio-bar-playpause,
-            #audio-bar-close {
-                width: 32px;
-                height: 32px;
-            }
-            
-            #audio-bar-playpause svg,
-            #audio-bar-close svg {
-                width: 18px;
-                height: 18px;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            .audio-bar-container {
                 gap: 8px;
+                height: 40px;
             }
             
             #audio-bar-title {
                 display: none;
             }
             
-            #audio-bar_current,
+            .audio-bar-progress-container {
+                gap: 6px;
+                min-width: 80px;
+                flex: 1;
+            }
+            
+            #audio-bar-current,
+            #audio-bar-duration {
+                font-size: 0.75rem;
+                min-width: 32px;
+            }
+            
+            #audio-bar-progress {
+                max-width: none;
+                flex: 1;
+                height: 6px;
+            }
+
+            #audio-bar-progress::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+                margin-top: -5px;
+            }
+            
+            #audio-bar-playpause,
+            #audio-bar-close {
+                width: 40px;
+                height: 40px;
+            }
+            
+            #audio-bar-playpause svg,
+            #audio-bar-close svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .audio-bar-container {
+                gap: 6px;
+            }
+            
+            #audio-bar-current,
             #audio-bar-duration {
                 font-size: 0.7rem;
-                min-width: 26px;
+                min-width: 28px;
+            }
+
+            #audio-bar-playpause,
+            #audio-bar-close,
+            #audio-bar-volume-btn {
+                width: 36px;
+                height: 36px;
             }
         }
 
@@ -640,6 +663,8 @@
             padding: 0;
             border-radius: 50%;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         #audio-bar-volume-btn:hover {
@@ -692,7 +717,8 @@
             border-top: 6px solid rgba(0, 255, 136, 0.3);
         }
 
-        .volume-control-wrapper:hover .volume-popup {
+        .volume-control-wrapper:hover .volume-popup,
+        .volume-popup.active {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) scale(1);
@@ -711,29 +737,30 @@
             -webkit-appearance: none;
             appearance: none;
             width: 80px;
-            height: 4px;
+            height: 6px;
             background: linear-gradient(to right, var(--primary-green) 0%, var(--primary-green) var(--volume-percent, 100%), rgba(0, 255, 136, 0.2) var(--volume-percent, 100%), rgba(0, 255, 136, 0.2) 100%);
-            border-radius: 2px;
+            border-radius: 3px;
             outline: none;
             cursor: pointer;
             transform: rotate(-90deg);
             transform-origin: center center;
             margin: 0;
             padding: 0;
+            touch-action: none;
         }
 
         #audio-bar-volume::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary-green);
             border: none;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             box-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
-            margin-top: -4px;
+            margin-top: -6px;
         }
 
         #audio-bar-volume:hover::-webkit-slider-thumb {
@@ -742,14 +769,14 @@
         }
 
         #audio-bar-volume::-webkit-slider-runnable-track {
-            height: 4px;
+            height: 6px;
             background: transparent;
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         #audio-bar-volume::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary-green);
             border: none;
@@ -759,15 +786,15 @@
         }
 
         #audio-bar-volume::-moz-range-track {
-            height: 4px;
+            height: 6px;
             background: rgba(0, 255, 136, 0.2);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         #audio-bar-volume::-moz-range-progress {
-            height: 4px;
+            height: 6px;
             background: var(--primary-green);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         .volume-value {
@@ -779,43 +806,73 @@
             text-align: center;
         }
 
+        /* Mobile volume popup - горизонтальный вариант */
         @media (max-width: 600px) {
-            #audio-bar-volume-btn {
-                width: 32px;
-                height: 32px;
-            }
-
-            #audio-bar-volume-btn svg {
-                width: 18px;
-                height: 18px;
-            }
-
             .volume-popup {
-                padding: 8px 5px;
+                position: fixed;
+                bottom: 90px;
+                left: 50%;
+                transform: translateX(-50%) scale(0.9);
+                flex-direction: row;
+                padding: 12px 16px;
+                gap: 12px;
+                width: auto;
+                min-width: 200px;
+            }
+
+            .volume-popup.active {
+                transform: translateX(-50%) scale(1);
+            }
+
+            .volume-popup::after {
+                display: none;
             }
 
             .volume-slider-container {
-                height: 70px;
+                width: 120px;
+                height: 30px;
             }
 
             #audio-bar-volume {
-                width: 70px;
+                width: 120px;
+                height: 8px;
+                transform: none;
+            }
+
+            #audio-bar-volume::-webkit-slider-thumb {
+                width: 24px;
+                height: 24px;
+                margin-top: -8px;
+            }
+
+            .volume-value {
+                font-size: 0.85rem;
+                min-width: 40px;
+            }
+
+            #audio-bar-volume-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            #audio-bar-volume-btn svg {
+                width: 22px;
+                height: 22px;
             }
         }
-        
+
         @media (max-width: 400px) {
-            .audio-bar-container {
-                gap: 8px;
+            .volume-popup {
+                min-width: 180px;
+                padding: 10px 14px;
             }
-            
-            #audio-bar-title {
-                display: none;
+
+            .volume-slider-container {
+                width: 100px;
             }
-            
-            #audio-bar_current,
-            #audio-bar-duration {
-                font-size: 0.7rem;
-                min-width: 26px;
+
+            #audio-bar-volume {
+                width: 100px;
             }
         }
 
@@ -916,6 +973,8 @@
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .setting-group select:hover,
@@ -957,6 +1016,9 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             border: 1px solid rgba(0, 255, 136, 0.2);
+            overflow-x: auto;
+            max-width: 100%;
+            touch-action: manipulation;
         }
 
         .cell {
@@ -973,6 +1035,9 @@
             font-size: 0.9rem;
             transition: all 0.2s ease;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .cell:hover:not(.revealed):not(.flagged) {
@@ -1015,6 +1080,45 @@
         .cell.exploded {
             background: rgba(255, 50, 50, 0.5);
             animation: explode 0.5s ease;
+        }
+
+        /* Индикатор режима на мобильных */
+        .mobile-mode-indicator {
+            display: none;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .mode-toggle {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 25px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mode-btn.active {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+        }
+
+        .mode-btn:not(.active):hover {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary-green);
         }
 
         @keyframes explode {
@@ -1081,6 +1185,10 @@
             color: var(--primary-green);
         }
 
+        .game-hint.mobile-hint {
+            display: none;
+        }
+
         .difficulty-info {
             text-align: center;
             color: var(--text-gray);
@@ -1111,11 +1219,135 @@
             font-size: 0.6rem;
         }
 
-        @media (max-width: 500px) {
+        /* Мобильная адаптация сапёра */
+        @media (max-width: 600px) {
+            .game-section {
+                padding: 0 10px;
+            }
+
+            .game-container {
+                padding: 20px 15px;
+                border-radius: 12px;
+            }
+
+            .game-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .game-title {
+                font-size: 1.3rem;
+            }
+
+            .game-stats {
+                gap: 15px;
+            }
+
+            .stat-box {
+                padding: 6px 12px;
+            }
+
+            .stat-value {
+                font-size: 1.1rem;
+            }
+
+            .game-settings {
+                gap: 10px;
+            }
+
+            .setting-group select,
+            .game-btn {
+                padding: 12px 16px;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+
+            .mobile-mode-indicator {
+                display: block;
+            }
+
+            .game-hint {
+                display: none;
+            }
+
+            .game-hint.mobile-hint {
+                display: block;
+                font-size: 0.85rem;
+                padding: 10px;
+                background: rgba(0, 255, 136, 0.05);
+                border-radius: 8px;
+            }
+
+            .game-board {
+                padding: 10px;
+                gap: 2px;
+            }
+
+            .cell {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+                border-radius: 3px;
+            }
+
+            .cell:hover:not(.revealed):not(.flagged) {
+                transform: none;
+            }
+
+            .game-board.large-grid .cell {
+                width: 26px;
+                height: 26px;
+                font-size: 0.7rem;
+            }
+
+            .game-board.xlarge-grid .cell {
+                width: 22px;
+                height: 22px;
+                font-size: 0.6rem;
+            }
+
+            .game-board.xxlarge-grid .cell {
+                width: 18px;
+                height: 18px;
+                font-size: 0.5rem;
+            }
+
+            .game-message {
+                font-size: 1.1rem;
+                padding: 12px;
+            }
+
+            .game-quote {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .game-container {
+                padding: 15px 10px;
+            }
+
+            .game-title {
+                font-size: 1.1rem;
+            }
+
+            .stat-box {
+                padding: 5px 10px;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
             .cell {
                 width: 28px;
                 height: 28px;
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
 
             .game-board.large-grid .cell {
@@ -1127,13 +1359,119 @@
             .game-board.xlarge-grid .cell {
                 width: 20px;
                 height: 20px;
-                font-size: 0.6rem;
+                font-size: 0.55rem;
             }
 
             .game-board.xxlarge-grid .cell {
+                width: 16px;
+                height: 16px;
+                font-size: 0.45rem;
+            }
+
+            .mode-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .cell {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+
+            .game-board.large-grid .cell {
+                width: 20px;
+                height: 20px;
+            }
+
+            .game-board.xlarge-grid .cell {
                 width: 18px;
                 height: 18px;
-                font-size: 0.55rem;
+            }
+
+            .game-board.xxlarge-grid .cell {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        /* Улучшенный аудио-бар для мобильных */
+        @media (max-width: 600px) {
+            #audio-control-bar {
+                bottom: calc(15px + env(safe-area-inset-bottom));
+                left: 10px;
+                right: 10px;
+                transform: none;
+                padding: 12px 14px;
+                min-width: unset;
+                max-width: unset;
+                border-radius: 12px;
+            }
+            
+            .audio-bar-container {
+                gap: 8px;
+                height: 40px;
+            }
+            
+            #audio-bar-title {
+                display: none;
+            }
+            
+            .audio-bar-progress-container {
+                gap: 6px;
+                min-width: 80px;
+                flex: 1;
+            }
+            
+            #audio-bar-current,
+            #audio-bar-duration {
+                font-size: 0.75rem;
+                min-width: 32px;
+            }
+            
+            #audio-bar-progress {
+                max-width: none;
+                flex: 1;
+                height: 6px;
+            }
+
+            #audio-bar-progress::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+                margin-top: -5px;
+            }
+            
+            #audio-bar-playpause,
+            #audio-bar-close {
+                width: 40px;
+                height: 40px;
+            }
+            
+            #audio-bar-playpause svg,
+            #audio-bar-close svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .audio-bar-container {
+                gap: 6px;
+            }
+            
+            #audio-bar-current,
+            #audio-bar-duration {
+                font-size: 0.7rem;
+                min-width: 28px;
+            }
+
+            #audio-bar-playpause,
+            #audio-bar-close,
+            #audio-bar-volume-btn {
+                width: 36px;
+                height: 36px;
             }
         }
     </style>
@@ -1290,6 +1628,14 @@
                     </div>
                 </div>
 
+                <!-- Мобильный переключатель режима -->
+                <div class="mobile-mode-indicator">
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" id="mode-dig" data-mode="dig">🔍 Открыть</button>
+                        <button class="mode-btn" id="mode-flag" data-mode="flag">⚙ Флаг</button>
+                    </div>
+                </div>
+
                 <div class="difficulty-info" id="difficulty-info">10×10 • 15 буров</div>
 
                 <div class="game-board" id="game-board"></div>
@@ -1299,6 +1645,9 @@
 
                 <div class="game-hint">
                     <kbd>ЛКМ</kbd> — открыть &nbsp; <kbd>ПКМ</kbd> — отметить бур
+                </div>
+                <div class="game-hint mobile-hint">
+                    Переключите режим выше для флага
                 </div>
             </div>
         </section>
@@ -1564,6 +1913,7 @@
         const VOLUME_STORAGE_KEY = 'gurren_lagann_volume';
         let lastVolumeBeforeMute = 1;
         let isMuted = false;
+        let volumePopupActive = false;
 
         function loadSavedVolume() {
             const saved = localStorage.getItem(VOLUME_STORAGE_KEY);
@@ -1622,6 +1972,11 @@
             }
         }
 
+        // Проверка мобильного устройства
+        function isMobileDevice() {
+            return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        }
+
         // Инициализация громкости при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             const savedVol = loadSavedVolume();
@@ -1630,22 +1985,99 @@
             applyVolumeToAllAudio(savedVol);
         });
 
-        // Клик по кнопке — мьют/анмьют
+        // Переменная для отслеживания времени последнего нажатия на кнопку
+        let lastVolumeBtnTouchTime = 0;
+
+        // Клик по кнопке громкости — мьют/анмьют или открытие popup на мобильных
         volumeBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (isMuted) {
-                // Размьютить
-                isMuted = false;
-                updateVolumeUI(lastVolumeBeforeMute);
-                applyVolumeToAllAudio(lastVolumeBeforeMute);
+            e.preventDefault();
+            
+            if (isMobileDevice()) {
+                // Игнорируем click если недавно был touchend
+                if (Date.now() - lastVolumeBtnTouchTime < 300) {
+                    return;
+                }
+            }
+            
+            if (isMobileDevice()) {
+                // На мобильных — переключение popup
+                volumePopupActive = !volumePopupActive;
+                if (volumePopupActive) {
+                    volumePopup.classList.add('active');
+                } else {
+                    volumePopup.classList.remove('active');
+                }
             } else {
-                // Замьютить
-                lastVolumeBeforeMute = parseFloat(volumeSlider.value) || 1;
-                isMuted = true;
-                updateVolumeIcon(0);
-                applyVolumeToAllAudio(0);
+                // На десктопе — мьют/анмьют
+                if (isMuted) {
+                    isMuted = false;
+                    updateVolumeUI(lastVolumeBeforeMute);
+                    applyVolumeToAllAudio(lastVolumeBeforeMute);
+                } else {
+                    lastVolumeBeforeMute = parseFloat(volumeSlider.value) || 1;
+                    isMuted = true;
+                    updateVolumeIcon(0);
+                    applyVolumeToAllAudio(0);
+                }
             }
         });
+
+        // Обработка touchend на кнопке громкости для мобильных
+        volumeBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            lastVolumeBtnTouchTime = Date.now();
+            
+            // Переключение popup
+            volumePopupActive = !volumePopupActive;
+            if (volumePopupActive) {
+                volumePopup.classList.add('active');
+            } else {
+                volumePopup.classList.remove('active');
+            }
+        });
+
+        // Предотвращаем touchstart на кнопке громкости
+        volumeBtn.addEventListener('touchstart', function(e) {
+            e.stopPropagation();
+        });
+
+        // Закрытие popup при клике вне его (только для десктопа)
+        document.addEventListener('click', function(e) {
+            if (!volumePopupActive) return;
+            if (isMobileDevice()) return; // На мобильных используем touchend
+            
+            if (volumePopup.contains(e.target) || volumeBtn.contains(e.target)) {
+                return;
+            }
+            
+            volumePopupActive = false;
+            volumePopup.classList.remove('active');
+        });
+
+        // Закрытие popup при касании вне его (для мобильных)
+        document.addEventListener('touchend', function(e) {
+            if (!volumePopupActive) return;
+            
+            // Проверяем, что касание не по popup и не по кнопке громкости
+            if (volumePopup.contains(e.target) || volumeBtn.contains(e.target)) {
+                return;
+            }
+            
+            volumePopupActive = false;
+            volumePopup.classList.remove('active');
+        });
+
+        // Закрытие popup при скролле
+        document.addEventListener('scroll', function() {
+            if (volumePopupActive) {
+               
+                volumePopupActive = false;
+                volumePopup.classList.remove('active');
+            }
+        }, { passive: true });
 
         // Обработка изменения громкости
         volumeSlider.addEventListener('input', function() {
@@ -1664,7 +2096,12 @@
         // Предотвращение всплытия событий
         volumePopup.addEventListener('click', function(e) {
             e.stopPropagation();
+
         });
+
+        volumePopup.addEventListener('touchstart', function(e) {
+            e.stopPropagation();
+        }, { passive: true });
 
         // ============ MINESWEEPER GAME ============
         const gameBoard = document.getElementById('game-board');
@@ -1679,6 +2116,10 @@
         const difficultyInfo = document.getElementById('difficulty-info');
         const customSettings = document.querySelectorAll('.custom-setting');
 
+        // Мобильные элементы
+        const modeDigBtn = document.getElementById('mode-dig');
+        const modeFlagBtn = document.getElementById('mode-flag');
+
         let grid = [];
         let gridSize = 10;
         let mineCount = 15;
@@ -1688,6 +2129,9 @@
         let gameStarted = false;
         let timerInterval = null;
         let seconds = 0;
+        let mobileMode = 'dig'; // 'dig' или 'flag'
+        let longPressTimer = null;
+        let isLongPress = false;
 
         // Пресеты сложности
         const difficultyPresets = {
@@ -1717,6 +2161,21 @@
             "Бур сломался... но дух — нет!",
             "Спираль продолжается!"
         ];
+
+        // Обработка переключателя режима на мобильных
+        if (modeDigBtn && modeFlagBtn) {
+            modeDigBtn.addEventListener('click', function() {
+                mobileMode = 'dig';
+                modeDigBtn.classList.add('active');
+                modeFlagBtn.classList.remove('active');
+            });
+
+            modeFlagBtn.addEventListener('click', function() {
+                mobileMode = 'flag';
+                modeFlagBtn.classList.add('active');
+                modeDigBtn.classList.remove('active');
+            });
+        }
 
         function updateDifficultyInfo() {
             difficultyInfo.textContent = `${gridSize}×${gridSize} • ${mineCount} буров`;
@@ -1799,10 +2258,50 @@
                     cell.dataset.row = row;
                     cell.dataset.col = col;
                     
-                    cell.addEventListener('click', () => handleClick(row, col));
+                    // Обработка кликов
+                    cell.addEventListener('click', (e) => {
+                        if (isLongPress) {
+                            isLongPress = false;
+                            return;
+                        }
+                        
+                        if (isMobileDevice() && mobileMode === 'flag') {
+                            handleRightClick(row, col);
+                        } else {
+                            handleClick(row, col);
+                        }
+                    });
+                    
                     cell.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         handleRightClick(row, col);
+                    });
+
+                    // Long press для мобильных устройств
+                    cell.addEventListener('touchstart', (e) => {
+                        isLongPress = false;
+                        longPressTimer = setTimeout(() => {
+                            isLongPress = true;
+                            handleRightClick(row, col);
+                            // Вибрация на поддерживающих устройствах
+                            if (navigator.vibrate) {
+                                navigator.vibrate(50);
+                            }
+                        }, 500);
+                    }, { passive: true });
+
+                    cell.addEventListener('touchend', () => {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                    });
+
+                    cell.addEventListener('touchmove', () => {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
                     });
                     
                     gameBoard.appendChild(cell);
@@ -1810,6 +2309,13 @@
             }
 
             updateDifficultyInfo();
+
+            // Сброс режима на "Открыть"
+            mobileMode = 'dig';
+            if (modeDigBtn && modeFlagBtn) {
+                modeDigBtn.classList.add('active');
+                modeFlagBtn.classList.remove('active');
+            }
         }
 
         function placeMines(firstRow, firstCol) {
